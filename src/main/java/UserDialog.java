@@ -1,6 +1,6 @@
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
@@ -11,13 +11,17 @@ public class UserDialog {
     int getPeopleNumber(int peopleNumber){
         System.out.println("На скольких человек необходимо разделить счёт?");
         while(peopleNumber <= 1) {
-            peopleNumber = scanner.nextInt();
-            if(peopleNumber == 1) {
-                System.out.println("Нет смысла ничего считать и делить для одного человека");
-                System.out.println("Введите корректное значение");
-            } else if(peopleNumber < 1) {
-                System.out.println("Количество человек меньше 1. Это некорректное значение для подсчёта");
-                System.out.println("Введите корректное значение");
+            try {
+                peopleNumber = scanner.nextInt();
+
+                if(peopleNumber == 1) {
+                    System.out.println("Нет смысла ничего считать и делить для одного человека\nВведите корректное значение");
+                } else if(peopleNumber < 1) {
+                    System.out.println("Количество человек меньше 1. Это некорректное значение для подсчёта\nВведите корректное значение");
+                }
+            } catch (InputMismatchException e) {
+                scanner.nextLine();
+                System.out.println("Неверный формат данных\nВведите корректное значение");
             }
         }
 
@@ -29,7 +33,19 @@ public class UserDialog {
         System.out.println("Введите название товара");
         product.name = scanner.next();
         System.out.println("Введите стоимость товара");
-        product.coast = Double.parseDouble(scanner.next());
+        while (true) {
+            try {
+                product.coast = Double.parseDouble(scanner.next());
+                if(product.coast < 0) {
+                    System.out.println("Стоимость товара не может быть отрицательной\nВведите корректное значение");
+                } else {
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                scanner.nextLine();
+                System.out.println("Неверный формат данных\nВведите корректное значение");
+            }
+        }
         return product;
     }
 
